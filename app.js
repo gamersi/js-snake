@@ -16,6 +16,15 @@ function Snake() {
         this.score++;
         this.scoreElem.innerText = this.score;
     }
+    this.pause = (isPaused) => {
+        if(!isPaused) {
+            clearInterval(b.updateInterval);
+            this.scoreElem.innerText = "PAUSED"
+        }else {
+            b.updateInterval = setInterval(b.update, 1000/8);
+            this.scoreElem.innerText = this.score;
+        }
+    }
     this.lose = () => {
         this.score = 0
         this.scoreElem.innerText = this.score;
@@ -35,6 +44,7 @@ function Food() {
 }
 
 function Board() {
+    this.paused = false;
     this.blockSize = 25;
     this.rows = 20;
     this.cols = 20;
@@ -49,7 +59,7 @@ function Board() {
         s = new Snake();
         f = new Food();
         f.placeFood();
-        document.addEventListener('keyup', this.changeDirection);
+        document.addEventListener('keydown', this.changeDirection);
 
         this.updateInterval = setInterval(this.update, 1000/8);
     }
@@ -76,6 +86,12 @@ function Board() {
                 s.velocityX = 1;
                 s.velocityY = 0;
                 break
+            case "Escape":
+                if(!this.paused)
+                    s.pause(false)
+                else
+                    s.pause(true)
+                this.paused = !this.paused
             default:
                 break;
         }
