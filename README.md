@@ -1,1 +1,1 @@
-"# js-snake" 
+# js-snake
