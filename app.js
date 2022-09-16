@@ -12,6 +12,7 @@ function Snake() {
     this.velocityX = 0;
     this.velocityY = 0;
     this.snakeColor = "lime";
+    this.eyeColor = "black";
     this.increaseScore = () => {
         this.score++;
         this.scoreElem.innerText = this.score;
@@ -67,26 +68,31 @@ function Board() {
     this.changeDirection = (e) => {
         switch (e.code) {
             case "ArrowUp":
+            case "KeyW":
                 if(s.velocityY == 1) break;
                 s.velocityX = 0;
                 s.velocityY = -1;
                 break;
             case "ArrowDown":
+            case "KeyS":
                 if(s.velocityY == -1) break;
                 s.velocityX = 0;
                 s.velocityY = 1;
                 break
             case "ArrowLeft":
+            case "KeyA":
                 if(s.velocityX == 1) break;
                 s.velocityX = -1;
                 s.velocityY = 0;
                 break
             case "ArrowRight":
+            case "KeyD":
                 if(s.velocityX == -1) break;
                 s.velocityX = 1;
                 s.velocityY = 0;
                 break
             case "Escape":
+            case "Space":
                 if(!this.paused)
                     s.pause(false)
                 else
@@ -135,6 +141,16 @@ function Board() {
             { this.lose(); }
         this.context.fillStyle = s.snakeColor;
         this.context.fillRect(s.snakeX, s.snakeY, this.blockSize, this.blockSize);
+
+        //snake eyes
+        let eyesize = b.blockSize / 5;
+        this.context.fillStyle = s.eyeColor;
+        this.context.fillRect(s.snakeX + eyesize, s.snakeY + eyesize, eyesize, eyesize);
+        this.context.fillRect(s.snakeX + (eyesize * 3), s.snakeY + eyesize, eyesize, eyesize);
+
+
+        // snake tail
+        this.context.fillStyle = s.snakeColor;
         for(let i = 0; i < s.snakeBody.length; i++) {
             this.context.fillRect(s.snakeBody[i][0], s.snakeBody[i][1], this.blockSize, this.blockSize)
         }
