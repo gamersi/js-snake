@@ -6,6 +6,7 @@ function Snake() {
     this.loseElem = document.getElementById("lose");
     this.score = 0;
     this.scoreElem = document.getElementById("score");
+    this.highscoreElem = document.getElementById("highscore");
     this.snakeBody = [];
     this.snakeX = b.blockSize * 10;
     this.snakeY = b.blockSize * 10;
@@ -16,6 +17,11 @@ function Snake() {
     this.increaseScore = () => {
         this.score++;
         this.scoreElem.innerText = this.score;
+        if(localStorage.getItem("highscore") < this.score) this.setHighscore(this.score);
+    }
+    this.setHighscore = (val) => {
+        localStorage.setItem("highscore", val);
+        this.highscoreElem.innerText = val;
     }
     this.pause = (isPaused) => {
         if(!isPaused) {
@@ -60,6 +66,7 @@ function Board() {
         s = new Snake();
         f = new Food();
         f.placeFood();
+        s.highscoreElem.innerText = localStorage.getItem("highscore")
         document.addEventListener('keydown', this.changeDirection);
 
         this.updateInterval = setInterval(this.update, 1000/8);
@@ -169,6 +176,9 @@ function Board() {
 
 
 window.onload = () => {
+    if(localStorage.getItem("highscore") == null) {
+        localStorage.setItem("highscore", 0)
+    }
     b = new Board();
     b.initBoard();
 }
