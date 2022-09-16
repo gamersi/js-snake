@@ -115,13 +115,11 @@ function Board() {
             s.snakeBody[0] = [s.snakeX, s.snakeY];
         }
 
-        //for (let i = s.snakeBody.length - 1; i > 0; i--) {
-        //     if(snakeBody[i][0] == f.foodX && snakeBody[i][1] == f.foodY) {
-        //         f.placeFood();
-        //         this.update();
-        //         return
-        //     }
-        // }
+        for (let i = s.snakeBody.length - 1; i > 0; i--) {
+            if(s.snakeBody[i][0] == f.foodX && s.snakeBody[i][1] == f.foodY) {
+                f.placeFood();
+            }
+        }
 
         //food
         this.context.fillStyle = f.foodColor;
