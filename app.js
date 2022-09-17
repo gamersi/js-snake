@@ -3,6 +3,7 @@ var f;
 var b;
 
 function Snake() {
+    this.eatself = false
     this.loseElem = document.getElementById("lose");
     this.score = 0;
     this.scoreElem = document.getElementById("score");
@@ -14,6 +15,11 @@ function Snake() {
     this.velocityY = 0;
     this.snakeColor = "lime";
     this.eyeColor = "black";
+    this.loadSnakeSettings = () => {
+        this.eatself = localStorage.getItem("eatself");
+        this.snakeColor = localStorage.getItem("snakecolor");
+        this.eyeColor = localStorage.getItem("eyecolor");
+    }
     this.increaseScore = () => {
         this.score++;
         this.scoreElem.innerText = this.score;
@@ -44,6 +50,9 @@ function Food() {
     this.foodX = 0;
     this.foodY = 0;
     this.foodColor = "red";
+    this.loadFoodSettings = () => {
+        this.foodColor = localStorage.getItem("foodcolor");
+    }
     this.placeFood = () => {
         this.foodX = Math.floor(Math.random() * b.cols) * b.blockSize;
         this.foodY = Math.floor(Math.random() * b.rows) * b.blockSize;
@@ -52,6 +61,8 @@ function Food() {
 
 function Board() {
     this.paused = false;
+    this.settingsBtnElem = document.getElementById('settings');
+    this.settingsMenuElem = document.getElementById('settingsmenu');
     this.blockSize = 25;
     this.rows = 20;
     this.cols = 20;
@@ -61,17 +72,51 @@ function Board() {
         this.board = document.getElementById("board");
         this.board.height = this.rows * this.blockSize;
         this.board.width = this.cols * this.blockSize;
+        this.board.color = "#000000";
         this.context = board.getContext("2d");
 
         s = new Snake();
         f = new Food();
+
+        this.loadSettings();
+
+        this.settingsBtnElem.addEventListener('click', () => this.openSettingsPopup());
+
         f.placeFood();
-        s.highscoreElem.innerText = localStorage.getItem("highscore")
+        s.highscoreElem.innerText = localStorage.getItem("highscore");
         document.addEventListener('keydown', this.changeDirection);
 
         this.updateInterval = setInterval(this.update, 1000/8);
     }
 
+    this.loadSettings = () => {
+        this.board.color = localStorage.getItem("boardcolor");
+        s.loadSnakeSettings();
+        f.loadFoodSettings();
+    }
+
+    this.openSettingsPopup = () => {
+        document.getElementById("eatself").checked = this.parseBool(localStorage.getItem("eatself"));
+        document.getElementById("snakecolor").value = localStorage.getItem("snakecolor");
+        document.getElementById("eyecolor").value = localStorage.getItem("eyecolor");
+        document.getElementById("foodcolor").value = localStorage.getItem("foodcolor");
+        document.getElementById("boardcolor").value = localStorage.getItem("boardcolor");
+        document.getElementById("settingsdone").addEventListener('click', () => this.closeSettingsPopup())
+        this.settingsMenuElem.style.display = "flex";
+    }
+
+    this.parseBool = (val) => {
+        return val === true || val === "true"
+    }
+    this.closeSettingsPopup = () => {
+        localStorage.setItem("eatself", document.getElementById("eatself").checked);
+        localStorage.setItem("snakecolor", document.getElementById("snakecolor").value);
+        localStorage.setItem("eyecolor", document.getElementById("eyecolor").value);
+        localStorage.setItem("foodcolor", document.getElementById("foodcolor").value);
+        localStorage.setItem("boardcolor", document.getElementById("boardcolor").value);
+        this.loadSettings();
+        this.settingsMenuElem.style.display = "none";
+    }
     this.changeDirection = (e) => {
         switch (e.code) {
             case "ArrowUp":
@@ -112,7 +157,7 @@ function Board() {
 
     this.update = () => {
         //board
-        this.context.fillStyle = "black";
+        this.context.fillStyle = this.board.color;
         this.context.fillRect(0, 0, this.board.width, this.board.height);
 
         if (s.snakeX == f.foodX && s.snakeY == f.foodY) {
@@ -132,6 +177,9 @@ function Board() {
             if(s.snakeBody[i][0] == f.foodX && s.snakeBody[i][1] == f.foodY) {
                 f.placeFood();
             }
+            if(this.parseBool(s.eatself) && s.snakeBody[i][0] == s.snakeX && s.snakeBody[i][1] == s.snakeY) {
+                this.lose();
+            }
         }
 
         //food
@@ -145,7 +193,7 @@ function Board() {
             s.snakeY < 0 ||
             s.snakeX > 475 ||
             s.snakeY > 475)
-            { this.lose(); }
+            { this.lose();}
         this.context.fillStyle = s.snakeColor;
         this.context.fillRect(s.snakeX, s.snakeY, this.blockSize, this.blockSize);
 
@@ -154,7 +202,6 @@ function Board() {
         this.context.fillStyle = s.eyeColor;
         this.context.fillRect(s.snakeX + eyesize, s.snakeY + eyesize, eyesize, eyesize);
         this.context.fillRect(s.snakeX + (eyesize * 3), s.snakeY + eyesize, eyesize, eyesize);
-
 
         // snake tail
         this.context.fillStyle = s.snakeColor;
@@ -176,9 +223,12 @@ function Board() {
 
 
 window.onload = () => {
-    if(localStorage.getItem("highscore") == null) {
-        localStorage.setItem("highscore", 0)
-    }
+    if(localStorage.getItem("highscore") == null) localStorage.setItem("highscore", 0);
+    if(localStorage.getItem("eatself") == null) localStorage.setItem("eatself", true);
+    if(localStorage.getItem("snakecolor") == null) localStorage.setItem("snakecolor", "#00FF00");
+    if(localStorage.getItem("eyecolor") == null) localStorage.setItem("eyecolor", "#000000");
+    if(localStorage.getItem("foodcolor") == null) localStorage.setItem("foodcolor", "#FE0000");
+    if(localStorage.getItem("boardcolor") == null) localStorage.setItem("boardcolor", "#000000");
     b = new Board();
     b.initBoard();
 }
