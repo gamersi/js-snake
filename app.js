@@ -3,7 +3,7 @@ var f;
 var b;
 
 function Snake() {
-    this.eatself = false
+    this.eatself = false;
     this.loseElem = document.getElementById("lose");
     this.score = 0;
     this.scoreElem = document.getElementById("score");
@@ -32,14 +32,14 @@ function Snake() {
     this.pause = (isPaused) => {
         if(!isPaused) {
             clearInterval(b.updateInterval);
-            this.scoreElem.innerText = "PAUSED"
+            this.scoreElem.innerText = "PAUSED";
         }else {
             b.updateInterval = setInterval(b.update, 1000/8);
             this.scoreElem.innerText = this.score;
         }
     }
     this.lose = () => {
-        this.score = 0
+        this.score = 0;
         this.scoreElem.innerText = this.score;
         this.loseElem.classList.add("active");
         setTimeout(() => this.loseElem.classList.remove("active"), 1000);
@@ -101,12 +101,12 @@ function Board() {
         document.getElementById("eyecolor").value = localStorage.getItem("eyecolor");
         document.getElementById("foodcolor").value = localStorage.getItem("foodcolor");
         document.getElementById("boardcolor").value = localStorage.getItem("boardcolor");
-        document.getElementById("settingsdone").addEventListener('click', () => this.closeSettingsPopup())
+        document.getElementById("settingsdone").addEventListener('click', () => this.closeSettingsPopup());
         this.settingsMenuElem.style.display = "flex";
     }
 
     this.parseBool = (val) => {
-        return val === true || val === "true"
+        return val === true || val === "true";
     }
     this.closeSettingsPopup = () => {
         localStorage.setItem("eatself", document.getElementById("eatself").checked);
@@ -146,10 +146,10 @@ function Board() {
             case "Escape":
             case "Space":
                 if(!this.paused)
-                    s.pause(false)
+                    s.pause(false);
                 else
-                    s.pause(true)
-                this.paused = !this.paused
+                    s.pause(true);
+                this.paused = !this.paused;
             default:
                 break;
         }
@@ -206,7 +206,7 @@ function Board() {
         // snake tail
         this.context.fillStyle = s.snakeColor;
         for(let i = 0; i < s.snakeBody.length; i++) {
-            this.context.fillRect(s.snakeBody[i][0], s.snakeBody[i][1], this.blockSize, this.blockSize)
+            this.context.fillRect(s.snakeBody[i][0], s.snakeBody[i][1], this.blockSize, this.blockSize);
         }
     }
 
