@@ -102,11 +102,22 @@ function Board() {
         document.getElementById("foodcolor").value = localStorage.getItem("foodcolor");
         document.getElementById("boardcolor").value = localStorage.getItem("boardcolor");
         document.getElementById("settingsdone").addEventListener('click', () => this.closeSettingsPopup());
+        document.getElementById("settingsreset").addEventListener('click', () => this.resetSettings());
         this.settingsMenuElem.style.display = "flex";
     }
 
     this.parseBool = (val) => {
         return val === true || val === "true";
+    }
+    this.resetSettings = () => {
+        localStorage.setItem("highscore", 0);
+        localStorage.setItem("eatself", true);
+        localStorage.setItem("snakecolor", "#00FF00");
+        localStorage.setItem("eyecolor", "#000000");
+        localStorage.setItem("foodcolor", "#FE0000");
+        localStorage.setItem("boardcolor", "#000000");
+        this.loadSettings();
+        this.settingsMenuElem.style.display = "none";
     }
     this.closeSettingsPopup = () => {
         localStorage.setItem("eatself", document.getElementById("eatself").checked);
