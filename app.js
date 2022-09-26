@@ -110,7 +110,6 @@ function Board() {
         return val === true || val === "true";
     }
     this.resetSettings = () => {
-        localStorage.setItem("highscore", 0);
         localStorage.setItem("eatself", true);
         localStorage.setItem("snakecolor", "#00FF00");
         localStorage.setItem("eyecolor", "#000000");
